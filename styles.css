@@ -1,0 +1,190 @@
+body {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #e74c3c;
+}
+
+.revolver {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px;
+}
+
+.cylinder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: #34495e;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chamber {
+    width: 25%;
+    height: 25%;
+    background-color: #7f8c8d;
+    border-radius: 50%;
+    margin: 5%;
+    flex-shrink: 0;
+}
+
+.bullet {
+    background-color: #e74c3c;
+}
+
+button {
+    background-color: #e74c3c;
+    color: #ecf0f1;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #c0392b;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 1.5em;
+}
+
+.result.success {
+    color: #2ecc71;
+}
+
+.result.failure {
+    color: #e74c3c;
+}
+
+/* Conteneur pour le bouton Start */
+.container:last-of-type {
+    margin-top: 30px; /* Ajoute de l'espace entre les deux conteneurs */
+}
+
+#start-button {
+    background-color: #3498db; /* Couleur de fond du bouton Start */
+    color: #ecf0f1; /* Couleur du texte du bouton */
+    border: none; /* Supprime les bordures */
+    padding: 15px 30px; /* Taille du bouton */
+    font-size: 1.5em; /* Taille de la police */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur en forme de main */
+    transition: background-color 0.3s; /* Animation au survol */
+}
+
+#start-button:hover {
+    background-color: #2980b9; /* Couleur de fond au survol */
+}
+
+#game {
+    display: none;
+}
+
+.loading-container {
+    text-align: center;
+}
+
+.spinner {
+    border: 8px solid #ecf0f1; /* Couleur de l'anneau */
+    border-top: 8px solid #e74c3c; /* Couleur du spinner */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1.5s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+p {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-box {
+    background-color: #34495e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #e74c3c;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #7f8c8d;
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #e74c3c;
+    color: #ecf0f1;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #c0392b;
+}
