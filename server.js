@@ -2,14 +2,15 @@ const { clusterApiUrl,
 		Connection,
 		PublicKey,
 		LAMPORTS_PER_SOL } = require("@solana/web3.js");
-const express = require("express");
+let app = require("./OAuthServer/src/app.js");
+require("./OAuthServer/src/db/mongoose");
 const cors = require("cors");
-const app = express();
 const server = require("http").createServer(app);
 const path = require("path");
 const io = require("socket.io")(server);
-
-const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+const jwt = require("./OAuthServer/src/members/utils/jwt");
+const RoomModel = require("./OAuthServer/src/members/RoomModel");
+//const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
 
 function get_load()
 {
@@ -19,7 +20,7 @@ function get_load()
 	return (load);
 }
 
-let rooms = [{ uid: 0, players: [], load: get_load(), counter: 0 }];
+let rooms = [];
 let uid = 0;
 let ruid = 0;
 
@@ -39,50 +40,58 @@ app.get("/", (req, res) => {
 
 io.on("connection", async (socket) => {
 	uid = uid + 1;
-	let myId = uid;
+	if (!socket.handshake.auth.token)
+		return ;
+	let token = jwt.verifyToken(socket.handshake.auth.token);
+	if (!token)
+		return ;
+	let myId = token.uid;
+	let myInterval = null;
 	console.log(`New connection : ${ myId }`);
 	socket.emit("myid", myId);
-	socket.on("matchmaking", () => {
-		let room = rooms[rooms.length - 1];
-		let user = rooms.find((data) => ((data.players.length > 0 && data.players[0].uid == myId) || (data.players.length > 1 && data.players[1].uid == myId)));
-		if (user) {
-			console.log(`User ${myId} already in game.`);
-			return ;
-		}
-		if (room.players.length == 1)
+	socket.on("matchmaking", async () => {
+		let r = await RoomModel.find({}).$where('this.players.length < 2');
+		let room = null;
+		if (r.length == 0)
 		{
-			room.players.push({ uid: myId, balance: 1, first: 0 });
-			socket.join(`room${room.uid}`);
-			socket.broadcast.to(`room${room.uid}`).emit("matched", room);
+			room = new RoomModel({
+				load: get_load(),
+				players: [myId],
+				balance: 1,
+			});
+			await room.save();
+			socket.join(`room${room._id.toString()}`); 
+		}
+		else {
+			r[r.length - 1].players.push(myId);
+			await r[r.length - 1].save();
+			room = r[r.length - 1];
+			socket.join(`room${room._id.toString()}`);
+			socket.broadcast.to(`room${room._id.toString()}`).emit("matched", room);
 			socket.emit("matched", room);
-		}
-		else if (room.players.length == 2)
-		{
-			room = { uid: room.uid + 1, players: [{ uid: myId, balance: 1, first: 1 }], load: get_load(), counter: 0 };
-			rooms = [...rooms, room];
-			socket.join(`room${room.uid}`);
-		}
-		else
-		{
-			room.players.push({ uid: myId, balance: 1, first: 1 });
-			socket.join(`room${room.uid}`);
 		}
 	});
 
-	socket.on("play", (data) => {
-		let room = rooms.find((d) => d.uid == data.room_id);
-		if (!room || room.counter >= 6)
+	socket.on("leaveroom", (data) => {
+		let { _id } = data;
+		socket.leave(`room${_id}`);
+	});
+
+	socket.on("play", async (data) => {
+		let room = await RoomModel.findOne({_id: data._id});
+		if (!room || room.counter >= 6 || room.players[room.counter % 2].uid != data.myId)
 			return ;
 		if (!room.load[room.counter])
 		{
 			room.counter = room.counter + 1;
-			socket.broadcast.to(`room${room.uid}`).emit("room", room);
+			await room.save();
+			socket.broadcast.to(`room${room._id.toString()}`).emit("room", room);
 			socket.emit("room", room);
 		} 
 		else
 		{
-			socket.broadcast.to(`room${room.uid}`).emit("endgame", { ...room, win: 1 });
-			socket.emit("endgame", { ...room, win: 0 });
+			socket.broadcast.to(`room${room._id}`).emit("endgame", { ...room._doc, win: 1 });
+			socket.emit("endgame", { ...room._doc, win: 0 });
 		}
 	});
 

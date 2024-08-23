@@ -11,6 +11,10 @@ let Schema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    balance: {
+        type: Number,
+        default: 0,
+    }
 });
 
 Schema.pre("save", function (next) {

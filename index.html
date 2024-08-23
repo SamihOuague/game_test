@@ -7,39 +7,69 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="#">PumPRoulette</a>
+        </div>
+        <ul class="navbar-links">
+            <li>1 Token = 0.01 SOL</li>
+            <li id="balance" style="display: none;">Wallet: <span id="wallet">0</span> token(s) - <a href="#" style="text-decoration: underline;"><i>get more</i></a></li>
+        </ul>
+        <div class="navbar-toggle" id="navbar-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
     <div class="loading-container" id="loading">
         <div class="spinner"></div>
         <p>Loading...</p>
     </div>
     <div class="auth-container" id="auth" style="display: none;">
         <!-- Formulaire de Connexion -->
-        <div class="form-box">
+        <div class="form-box" id="login-container">
             <h2>Sign In</h2>
             <form id="login-form">
                 <div class="input-group">
                     <label for="login-username">Username</label>
-                    <input type="text" id="login-username" name="username" required>
+                    <input type="text" id="login-username" name="username" required />
                 </div>
                 <div class="input-group">
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required>
+                    <input type="password" id="login-password" name="password" required />
                 </div>
-                <a href="#">Not registred yet ?</a>
+                <div class="input-group">
+                    <input type="hidden" id="login-pkce" name="pkce" disabled required />
+                </div>
+                <div class="input-group">
+                    <input type="hidden" id="login-nonce" name="nonce" disabled required />
+                </div>
+                <a href="#" class="auth-link">Not registred yet ?</a>
                 <button type="submit">Login</button>
             </form>
         </div>
-        <div class="form-box" style="display: none;" style="display: none;">
+        <div class="form-box" style="display: none;" id="register-container">
             <h2>Sign Up</h2>
             <form id="register-form">
                 <div class="input-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" name="username" required>
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" required />
                 </div>
                 <div class="input-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required>
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" required />
                 </div>
-                <a href="#">Already have an account ?</a>
+                <div class="input-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" name="confirm-password" required />
+                </div>
+                <div class="input-group">
+                    <input type="hidden" id="register-pkce" name="pkce" disabled required />
+                </div>
+                <div class="input-group">
+                    <input type="hidden" id="register-nonce" name="nonce" disabled required />
+                </div>
+                <a href="#" class="auth-link">Already have an account ?</a> 
                 <button type="submit">Register</button>
             </form>
         </div>
@@ -56,9 +86,18 @@
                 <div class="chamber"></div>
             </div>
         </div>
+        <button id="play-btn">Shoot</button>
+        <button id="back-btn" style="background-color: grey; display: none;" id="back-btn">Back</button>
     </div>
+
     <div class="container" id="start" style="display: none;">
-        <button id="start-button">Commencer</button>
+        <ul id="channel-list" class="channel-list">
+            <li id="1">Play with 1 token</li>
+            <li id="2">Play with 2 tokens</li>
+            <li id="5">Play with 5 tokens</li>
+            <li id="10">Play with 10 tokens</li>
+            <li id="25">Play with 25 tokens</li>
+        </ul>
     </div>
     <script src="dist/bundle.js"></script>
 </body>
